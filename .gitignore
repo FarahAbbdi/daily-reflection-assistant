@@ -1,0 +1,10 @@
+# Ognore token and credential files
+token.json
+credentials.json
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Environment files
+.env
