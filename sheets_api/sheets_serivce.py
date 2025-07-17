@@ -3,12 +3,12 @@ from googleapiclient.errors import HttpError
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+# Returns an authenticated Google Sheets API service
 def get_sheets_service(creds):
-    """Build and return the Google Calendar API service."""
     return build("sheets", "v4", credentials=creds)
 
-def get_latest_reflection(service, spreadsheet_id, range_name):
-    """Fetch latest reflection text from google sheets"""
+# Returns latest reflection text from google sheets
+def get_latest_reflection(service, spreadsheet_id, range_name, today):
     try:
         result = (
             service.spreadsheets()
@@ -20,15 +20,11 @@ def get_latest_reflection(service, spreadsheet_id, range_name):
         values = result.get("values", [])
         if not values or len(values) < 2:
             return None
-        
-        # Current date in Melbourne timezone
-        mel_tz = ZoneInfo("Australia/Melbourne")
-        today = datetime.now(mel_tz).date()
 
-        # Loop through rows (skip header)
-        for row in reversed(values[1:]):  # Start from last entry
-            timestamp_str = row[0] 
-            reflection_text = row[1]
+        # Loop through rows (skips header)
+        for row in reversed(values[1:]): 
+            timestamp_str = row[0] # timestamp column
+            reflection_text = row[1] # reflection text column
 
             mel_tz = ZoneInfo("Australia/Melbourne")
             timestamp = datetime.strptime(timestamp_str, "%m/%d/%Y %H:%M:%S").replace(tzinfo=mel_tz)
@@ -37,7 +33,7 @@ def get_latest_reflection(service, spreadsheet_id, range_name):
             if timestamp.date() == today:
                     return reflection_text
         
-        return None
+        return None # No reflection found for today
 
     except HttpError as error:
         print(f"An error occurred: {error}")

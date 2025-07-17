@@ -9,8 +9,8 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
 ]
 
+# Authenticate and return valid Google API credentials
 def get_credentials():
-    """Authenticate and return valid Google API credentials."""
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)

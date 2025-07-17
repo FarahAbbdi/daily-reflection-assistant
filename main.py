@@ -20,22 +20,20 @@ FORM_URL = (
 )
 
 def main():
-    """Main entry point for fetching events, reflections, and creating review event."""
-
     # 1. Authenticate and initialize services
     creds = get_credentials()
     calendar_service = get_calendar_service(creds)
     sheets_service = get_sheets_service(creds)
 
-    # 2. Fetch latest reflection from Google Sheets
-    reflection_text = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME)
+    # 2. Get time range (midnight to 9 PM Melbourne time)
+    time_min, time_max = get_range_for_date()
+
+    # 3. Fetch latest reflection from Google Sheets
+    reflection_text = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME, time_min)
     if reflection_text:
         print(f"Latest reflection: {reflection_text}")
     else:
         print("No reflection submitted yet.")
-
-    # 3. Get time range (midnight to 9 PM Melbourne time)
-    time_min, time_max = get_range_for_date()
 
     # 4. Fetch today's calendar events
     events = get_today_events(calendar_service, time_min, time_max)
