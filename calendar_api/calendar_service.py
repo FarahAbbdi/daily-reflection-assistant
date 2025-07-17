@@ -25,15 +25,18 @@ def get_today_events(service, time_min, time_max):
     except HttpError as error:
         print(f"An error occurred: {error}")
 
-def create_reflection_event(service):
+
+def create_reflection_event(service, form_url):
     """Create a reflection event in Google Calendar at 9 PM Melbourne time."""
 
+    # Refection time range: 9 PM to 9:30 PM
     start_time, end_time = get_event_time(21, 0, 30)  # 9 PM, 30 mins
 
-    event = {
+    # Event body
+    event_body = {
         "summary": "Daily Reflection",
-        "description": "Click the link to add your thoughts for today.",
-        "colorId": "6",  # Blue
+        "description": f"Submit your reflection here: {form_url}",
+        "colorId": "6",
         "start": {
             "dateTime": start_time,
             "timeZone": "Australia/Melbourne",
@@ -44,6 +47,20 @@ def create_reflection_event(service):
         },
     }
 
-    # Insert the event into the primary calendar
-    created_event = service.events().insert(calendarId="primary", body=event).execute()
-    print(f"Reflection event created: {created_event.get('htmlLink')}")
+    #  Search if today's reflection event already exists
+    events = service.events().list(
+        calendarId="primary",
+        timeMin=start_time,
+        timeMax=end_time,
+        q="Daily Reflection",
+        singleEvents=True,
+        orderBy="startTime"
+    ).execute().get("items", [])
+
+    if events:
+        # update existing events
+        event_id = events[0]["id"]
+        updated_event = service.events().update(calendarId="primary", eventId=event_id, body=event_body).execute()
+    else: 
+        # create a new event
+        created_event = service.events().insert(calendarId="primary", body=event_body).execute()
