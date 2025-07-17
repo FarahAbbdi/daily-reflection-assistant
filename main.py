@@ -11,6 +11,7 @@ from sheets_api.sheets_serivce import (
     get_latest_reflection,
 )
 from utils.utils import get_range_for_date
+from obsidian.obsidian_sync import save_markdown_to_obsidian
 
 # Constants
 SPREADSHEET_ID = "1lCGerTSAFwgQa8WArFFcmQorlO6K2QINrhKEWQFF8Pc"
@@ -27,6 +28,7 @@ def main():
 
     # 2. Get time range (midnight to 9 PM Melbourne time)
     time_min, time_max = get_range_for_date()
+    today_str = time_min.split("T")[0]
 
     # 3. Fetch latest reflection from Google Sheets
     reflection_text = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME, time_min)
@@ -37,16 +39,24 @@ def main():
 
     # 4. Fetch today's calendar events
     events = get_today_events(calendar_service, time_min, time_max)
+    event_summaries = []
     if not events:
         print("No events found for today.")
     else:
         print("\nToday's Events:")
         for event in events:
             start = event["start"].get("dateTime", event["start"].get("date"))
-            print(f"- {start}: {event['summary']}")
+            summary = f"- {start}: {event['summary']}"
+            print(summary)
+            event_summaries.append(summary)
 
     # 5. Create or update the Daily Reflection event in Google Calendar
     create_reflection_event(calendar_service, FORM_URL)
+
+    # 6. Save data to Obsidian markdown file
+    vault_path = input("Enter Vault_path: ")
+    save_markdown_to_obsidian(today_str, event_summaries, reflection_text or "No reflection submitted.", vault_path)
+
 
 
 if __name__ == "__main__":
