@@ -1,5 +1,6 @@
 import datetime
 
+import os
 from auth.auth import get_credentials
 from calendar_api.calendar_service import (
     get_calendar_service,
@@ -11,14 +12,17 @@ from sheets_api.sheets_serivce import (
     get_latest_reflection,
 )
 from utils.utils import get_range_for_date
-from obsidian.obsidian_sync import save_markdown_to_obsidian
+from utils.file_export import export_daily_review_to_markdown
+from dotenv import load_dotenv
 
-# Constants
-SPREADSHEET_ID = "1lCGerTSAFwgQa8WArFFcmQorlO6K2QINrhKEWQFF8Pc"
+# Load environment variables from .env file
+load_dotenv()
+
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
+FORM_URL = os.getenv("FORM_URL")
+VAULT_PATH = os.getenv("VAULT_PATH")
 RANGE_NAME = "Form Responses 1!A:B"  # Column A: Timestamp, Column B: Reflection
-FORM_URL = (
-    "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdx42543jkBPucHV2gE-fhOXXN4CgIl4NOB2hJKD4d2JJUnYw/formResponse"
-)
+
 
 def main():
     # 1. Authenticate and initialize services
@@ -32,11 +36,11 @@ def main():
 
     # 3. Fetch latest reflection from Google Sheets
     reflection_text = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME, time_min)
-    if reflection_text:
+    if reflection_text: # FOR DEBUGGING
         print(f"Latest reflection: {reflection_text}")
     else:
         print("No reflection submitted yet.")
-
+        
     # 4. Fetch today's calendar events
     events = get_today_events(calendar_service, time_min, time_max)
     event_summaries = []
@@ -45,18 +49,15 @@ def main():
     else:
         print("\nToday's Events:")
         for event in events:
-            start = event["start"].get("dateTime", event["start"].get("date"))
-            summary = f"- {start}: {event['summary']}"
-            print(summary)
+            summary = f"{event['summary']}"
+            print(summary) # FOR DEBUGGING
             event_summaries.append(summary)
 
     # 5. Create or update the Daily Reflection event in Google Calendar
     create_reflection_event(calendar_service, FORM_URL)
 
-    # 6. Save data to Obsidian markdown file
-    vault_path = input("Enter Vault_path: ")
-    save_markdown_to_obsidian(today_str, event_summaries, reflection_text or "No reflection submitted.", vault_path)
-
+    # 6. Export daily review (events and reflection) as a markdown file to the specified path
+    export_daily_review_to_markdown(today_str, event_summaries, reflection_text or "No reflection submitted.", VAULT_PATH)
 
 
 if __name__ == "__main__":

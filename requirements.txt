@@ -1,0 +1,8 @@
+# Google API libraries
+google-api-python-client==2.141.0
+google-auth==2.35.0
+google-auth-oauthlib==1.2.1
+google-auth-httplib2==0.2.0
+
+# For environment variables (if used)
+python-dotenv==1.0.1
