@@ -1,6 +1,6 @@
-import datetime
-
 import os
+from dotenv import load_dotenv
+
 from auth.auth import get_credentials
 from calendar_api.calendar_service import (
     get_calendar_service,
@@ -13,7 +13,6 @@ from sheets_api.sheets_serivce import (
 )
 from utils.utils import get_range_for_date
 from utils.file_export import export_daily_review_to_markdown
-from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,7 +24,7 @@ RANGE_NAME = "Form Responses 1!A:B"  # Column A: Timestamp, Column B: Reflection
 
 
 def main():
-    # 1. Authenticate and initialize services
+    # 1. Authenticate and initialize API services
     creds = get_credentials()
     calendar_service = get_calendar_service(creds)
     sheets_service = get_sheets_service(creds)
@@ -36,12 +35,11 @@ def main():
 
     # 3. Fetch latest reflection from Google Sheets
     reflection_text = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME, time_min)
-    if reflection_text: # FOR DEBUGGING
-        print(f"Latest reflection: {reflection_text}")
-    else:
-        print("No reflection submitted yet.")
+    # TODO: LEAVE FOR DEBUGGING REMOVE LATER
+    print(f"Latest reflection: {reflection_text}" if reflection_text else "No reflection submitted yet.")
         
     # 4. Fetch today's calendar events
+    # TODO: REMOVE PRINT STATEMENTS
     events = get_today_events(calendar_service, time_min, time_max)
     event_summaries = []
     if not events:

@@ -1,16 +1,26 @@
 import os.path
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+# Define required Google API scopes for Calendar and Sheets
 SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/spreadsheets",
 ]
 
-# Authenticate and return valid Google API credentials
 def get_credentials():
+    """
+    Authenticate the user with Google APIs (Calendar & Sheets) and return credentials.
+
+    - Checks for existing credentials in 'token.json'.
+    - Refreshes token if expired.
+    - Initiates OAuth flow if no valid credentials are found.
+    - Saves new credentials in 'token.json' for future use.
+
+    Returns:
+        Credentials: An authorized Google API credentials object.
+    """
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
