@@ -1,8 +1,8 @@
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+import json
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 def get_sheets_service(creds):
     """
@@ -42,17 +42,25 @@ def get_latest_reflection(service, spreadsheet_id, range_name, today):
         if not values or len(values) < 2:
             return None
 
+        mel_tz = ZoneInfo("Australia/Melbourne")
+        today = datetime.now(mel_tz).date()
+
         # Iterate over rows in reverse (latest first), skipping the header row
         for row in reversed(values[1:]): 
-            timestamp_str = row[0] # timestamp column
-            reflection_text = row[1] # reflection text column
-
-            mel_tz = ZoneInfo("Australia/Melbourne")
+            timestamp_str = row[0]
             timestamp = datetime.strptime(timestamp_str, "%m/%d/%Y %H:%M:%S").replace(tzinfo=mel_tz)
-            today = datetime.now(mel_tz).date()
 
             if timestamp.date() == today:
-                    return reflection_text
+                reflection_data = {
+                    "overall_day_rating": row[1],
+                    "mood_status": row[2],
+                    "daily_accomplishments": row[3],
+                    "daily_challenges": row[4],
+                    "risk_indicators": row[5].split(", ") if row[5] else [],
+                    "action_items": row[6],
+                    "additional_reflections": row[7] if len(row) > 7 else ""
+                }
+                return reflection_data
         
         return None # No reflection found for today
 

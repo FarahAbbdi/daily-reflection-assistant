@@ -12,7 +12,8 @@ from sheets_api.sheets_serivce import (
     get_latest_reflection,
 )
 from utils.utils import get_range_for_date
-from utils.file_export import export_daily_review_to_markdown
+from utils.file_export import export_ai_report_to_markdown
+from ai.ai_analyser import analyze_daily_reflection
 
 # Load environment variables from .env file
 load_dotenv()
@@ -20,7 +21,7 @@ load_dotenv()
 SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 FORM_URL = os.getenv("FORM_URL")
 VAULT_PATH = os.getenv("VAULT_PATH")
-RANGE_NAME = "Form Responses 1!A:B"  # Column A: Timestamp, Column B: Reflection
+RANGE_NAME = "Form Responses 1!A:H"
 
 
 def main():
@@ -34,29 +35,21 @@ def main():
     today_str = time_min.split("T")[0]
 
     # 3. Fetch latest reflection from Google Sheets
-    reflection_text = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME, time_min)
-    # TODO: LEAVE FOR DEBUGGING REMOVE LATER
-    print(f"Latest reflection: {reflection_text}" if reflection_text else "No reflection submitted yet.")
+    reflection_data = get_latest_reflection(sheets_service, SPREADSHEET_ID, RANGE_NAME, time_min)
         
     # 4. Fetch today's calendar events
-    # TODO: REMOVE PRINT STATEMENTS
     events = get_today_events(calendar_service, time_min, time_max)
-    event_summaries = []
-    if not events:
-        print("No events found for today.")
-    else:
-        print("\nToday's Events:")
-        for event in events:
-            summary = f"{event['summary']}"
-            print(summary) # FOR DEBUGGING
-            event_summaries.append(summary)
+    event_summaries = [event['summary'] for event in events] if events else []
 
     # 5. Create or update the Daily Reflection event in Google Calendar
     create_reflection_event(calendar_service, FORM_URL)
 
-    # 6. Export daily review (events and reflection) as a markdown file to the specified path
-    export_daily_review_to_markdown(today_str, event_summaries, reflection_text or "No reflection submitted.", VAULT_PATH)
+    # 6. Analyze reflection data with AI
+    markdown_report = analyze_daily_reflection(reflection_data, event_summaries)
 
+    # 7. Export AI-generated markdown report
+    saved_path = export_ai_report_to_markdown(today_str, markdown_report, VAULT_PATH)
+    print(f"AI analysis report saved to: {saved_path}")
 
 if __name__ == "__main__":
     main()
