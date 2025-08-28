@@ -1,7 +1,6 @@
 # Automated Daily Reflection System 📝  
 
-An automated journaling workflow that generates structured daily reflections.  
-The system runs in the background and produces Markdown summaries covering **events, moods, achievements, challenges, risks, and action items**.  
+An automated journaling workflow that generates structured daily reflections. The system runs in the background and produces Markdown summaries covering **events, moods, achievements, challenges, risks, and action items**.  
 
 ⚠️ **Note:** This project is a work in progress. The automation logic (via `launchd`) and full setup instructions will be pushed once finalized.  
 
@@ -45,33 +44,34 @@ Here’s what a generated reflection looks like:
 
 ### Today's Events  
 
-- Wake up  
-- SWEN20003 Tutorial 1  
-- COMP30023 Lecture 1  
-- Social - Black Collective  
-- COMP30023 Study Session  
-- Gym  
+- Morning routine  
+- Team meeting  
+- Work session  
+- Lunch with friends  
+- Study block / project work  
+- Evening workout  
 
 ---  
 
 ### Daily Mood & Performance  
 
-- **Overall Day Rating:** 🌟 Excellent  
-- **Predominant Mood:** Anxious or stressed  
+- **Overall Day Rating:** 🌟 Good  
+- **Predominant Mood:** Focused but slightly stressed  
 
 ---  
 
 ### Achievements  
 
-- Went to all my lectures (IT Project, Models of Computation)  
-- Went to gym in the morning  
-- Read 10 pages of a book  
+- Completed key work tasks  
+- Attended scheduled meetings/classes  
+- Made progress on personal reading goal  
 
 ---  
 
 ### Issues / Challenges  
 
-- Woke up a little later than usual at 9am and spent 30 mins on phone before getting out of bed  
+- Spent extra time on phone in the morning before starting work  
+- Some difficulty staying focused during afternoon study session  
 
 ---  
 
@@ -80,7 +80,7 @@ Here’s what a generated reflection looks like:
 - [x] Woke up late / Poor morning routine  
 - [ ] Procrastination or distractions  
 - [ ] Missed deadlines or delayed submissions  
-- [ ] High workload or overlapping assignments  
+- [ ] High workload or overlapping tasks  
 - [ ] Technical issues  
 - [ ] Difficulty understanding material  
 - [ ] Communication or collaboration issues  
@@ -90,14 +90,14 @@ Here’s what a generated reflection looks like:
 
 ### Action Items for Tomorrow  
 
-- Prepare for stand-up for group assignment (IT Project)  
-- Catch up on lecture for Models of Computation  
+- Prepare notes for upcoming meeting/project check-in  
+- Catch up on pending reading/study topics  
 
 ---  
 
 ### Additional Reflection  
 
-> Placeholder reflection text here.  
+> Placeholder reflection text here. 
 
 ---
 
@@ -126,4 +126,3 @@ The form is designed to be **quick and lightweight**, with fields for:
 ## 🌟 Credits
 
 - **Design and Development:** Farah
-
