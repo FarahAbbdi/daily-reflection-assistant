@@ -3,6 +3,8 @@
 An automated journaling workflow that generates structured daily reflections.  
 The system runs in the background and produces Markdown summaries covering **events, moods, achievements, challenges, risks, and action items**.  
 
+⚠️ **Note:** This project is a work in progress. The automation logic (via `launchd`) and full setup instructions will be pushed once finalized.  
+
 ---
 
 ## ⚙️ How It Works  
@@ -111,3 +113,14 @@ The form is designed to be **quick and lightweight**, with fields for:
 - Open-ended reflection  
 
 ---
+
+## ✅ Roadmap / Future Work  
+
+- Push full codebase with API integrations and automation scripts  
+- Add setup instructions (API keys, dependencies, launchd job file)
+- Polish form design and embed example responses in README  
+
+
+## 📜 License  
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.  
