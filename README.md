@@ -118,9 +118,12 @@ The form is designed to be **quick and lightweight**, with fields for:
 
 - Push full codebase with API integrations and automation scripts  
 - Add setup instructions (API keys, dependencies, launchd job file)
+- Implement long-term trend visualization dashboard
+- Add notifications/reminders for reflection prompts  
 - Polish form design and embed example responses in README  
 
 
 ## 🌟 Credits
 
 - **Design and Development:** Farah
+
